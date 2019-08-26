@@ -15,7 +15,7 @@ namespace LoginDemoEmpleado.Controllers
         {
             return View();
         }
-        //[Authorize(Roles = "Admin, User")]
+        [Authorize(Roles = "Admin, User")]
         public IActionResult Privacy()
         {
             return View();

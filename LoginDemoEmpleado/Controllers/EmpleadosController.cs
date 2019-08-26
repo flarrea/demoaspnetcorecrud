@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace LoginDemoEmpleado.Controllers
 {
-    //[Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     public class EmpleadosController : Controller
     {
         private readonly ApplicationDbContext _context;

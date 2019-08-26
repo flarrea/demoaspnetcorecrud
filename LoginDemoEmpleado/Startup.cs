@@ -38,9 +38,17 @@ namespace LoginDemoEmpleado
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
+            /*
             services.AddDefaultIdentity<IdentityUser>()
                 .AddDefaultUI(UIFramework.Bootstrap4)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+            */
+
+            services.AddIdentity<IdentityUser, IdentityRole>()
+             .AddDefaultUI(UIFramework.Bootstrap4)
+             .AddEntityFrameworkStores<ApplicationDbContext>();
+
+
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
@@ -72,6 +80,9 @@ namespace LoginDemoEmpleado
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+           
         }
+
     }
+
 }
