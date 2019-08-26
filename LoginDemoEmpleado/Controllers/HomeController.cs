@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using LoginDemoEmpleado.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace LoginDemoEmpleado.Controllers
 {
@@ -14,7 +15,7 @@ namespace LoginDemoEmpleado.Controllers
         {
             return View();
         }
-
+        //[Authorize(Roles = "Admin, User")]
         public IActionResult Privacy()
         {
             return View();

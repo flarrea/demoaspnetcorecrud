@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using LoginDemoEmpleado.Data;
 using LoginDemoEmpleado.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace LoginDemoEmpleado.Controllers
 {
+    //[Authorize(Roles = "Admin")]
     public class EmpleadosController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -20,9 +22,48 @@ namespace LoginDemoEmpleado.Controllers
         }
 
         // GET: Empleados
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? pageNumber)
         {
-            return View(await _context.Empleado.ToListAsync());
+            //return View(await _context.Empleado.ToListAsync());
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewData["DateSortParm"] = sortOrder == "Date" ? "date_desc" : "Date";
+            //ViewData["CurrentFilter"] = searchString;
+            if (searchString != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            var empleados = from s in _context.Empleado
+                           select s;
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                empleados = empleados.Where(s => s.LastName.Contains(searchString)
+                                       || s.FirstName.Contains(searchString));
+            }
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    empleados = empleados.OrderByDescending(s => s.LastName);
+                    break;
+                case "Date":
+                    empleados = empleados.OrderBy(s => s.FechaNacimiento);
+                    break;
+                case "date_desc":
+                    empleados = empleados.OrderByDescending(s => s.FechaNacimiento);
+                    break;
+                default:
+                    empleados = empleados.OrderBy(s => s.LastName);
+                    break;
+            }
+            //return View(await empleados.AsNoTracking().ToListAsync());
+            int pageSize = 3;
+            return View(await PaginatedList<Empleado>.CreateAsync(empleados.AsNoTracking(), pageNumber ?? 1, pageSize));
+
         }
 
         // GET: Empleados/Details/5
